@@ -17,6 +17,7 @@ docs/changed-files
 
 # locally required config files
 public/css/*.min.css
+.secrets
 
 # Editor junk
 *.sublime-workspace
