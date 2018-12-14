@@ -1,0 +1,1 @@
+docker run -it --name grafana -d -p 3000:3000 -v $(PWD):/var/lib/grafana/plugins/loginsights-grafana-datasource grafana/grafana:4.6.3
