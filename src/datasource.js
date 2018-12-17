@@ -11,7 +11,12 @@ export class GenericDatasource {
     this.templateSrv = templateSrv;
     this.withCredentials = instanceSettings.withCredentials;
     this.headers = {'Content-Type': 'application/json'};
+
     if (typeof instanceSettings.basicAuth === 'string' && instanceSettings.basicAuth.length > 0) {
+      this.basicAuth = instanceSettings.basicAuth;
+      var creds = atob(this.basicAuth.substr(6)).split(":");
+      this.username = creds[0];
+      this.password = btoa(creds[1]);
       this.headers['Authorization'] = instanceSettings.basicAuth;
     }
   }
@@ -38,15 +43,53 @@ export class GenericDatasource {
   }
 
   testDatasource() {
-    return this.doRequest({
-      url: this.url + '/',
-      method: 'GET',
-    }).then(response => {
-      if (response.status === 200) {
-        return { status: "success", message: "Data source is working", title: "Success" };
-      }
+    var options = {
+      url: '/api/v1/sessions',
+      transformResponse: function(data) {
+        return data;
+      },
+      method: 'POST',
+    };
+
+    return this._request(options).then(function(response) {
+      return response.data;
     });
+    // return this.doRequest({
+    //   url: this.url + '/',
+    //   method: 'GET',
+    // }).then(response => {
+    //   if (response.status === 200) {
+    //     return { status: "success", message: "Data source is working", title: "Success" };
+    //   }
+    // });
   }
+
+  // Helper to make API requests to Cloudera Manager. To avoid CORS issues, the requests may be proxied
+  // through Grafana's backend via `backendSrv.datasourceRequest`.
+  _request(options) {
+    options.url = this.url + options.url;
+    options.method = options.method || 'GET';
+    options.inspect = { 'type': 'log_insight_manager' };
+
+    if (this.basicAuth) {
+      if(this.bearerAuth) {
+        options.withCredentials = true;
+
+        options.headers = {
+          "Authorization": this.bearerAuth
+        };
+      } else {
+        options.withCredentials = false;
+        options.data = {
+          'username': this.username,
+          'password': atob(this.password)
+        }        
+      }  
+      
+    }
+
+    return this.backendSrv.datasourceRequest(options);
+  };
 
   annotationQuery(options) {
     var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
