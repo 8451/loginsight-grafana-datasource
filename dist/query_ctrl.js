@@ -1,55 +1,44 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
+///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
+System.register(['lodash', 'app/plugins/sdk', './css/query_editor.css!'], function(exports_1) {
+    var __extends = (this && this.__extends) || function (d, b) {
+        for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+    var lodash_1, sdk_1;
+    var ChangeMyNameQueryCtrl;
+    return {
+        setters:[
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
+            },
+            function (sdk_1_1) {
+                sdk_1 = sdk_1_1;
+            },
+            function (_1) {}],
+        execute: function() {
+            ChangeMyNameQueryCtrl = (function (_super) {
+                __extends(ChangeMyNameQueryCtrl, _super);
+                /** @ngInject **/
+                function ChangeMyNameQueryCtrl($scope, $injector, templateSrv) {
+                    _super.call(this, $scope, $injector);
+                    this.templateSrv = templateSrv;
+                    this.defaults = {};
+                    lodash_1.default.defaultsDeep(this.target, this.defaults);
+                    this.target.target = this.target.target || 'select metric';
+                    this.target.type = this.target.type || 'timeserie';
+                }
+                ChangeMyNameQueryCtrl.prototype.getOptions = function (query) {
+                    return this.datasource.metricFindQuery(query || '');
+                };
+                ChangeMyNameQueryCtrl.prototype.onChangeInternal = function () {
+                    this.panelCtrl.refresh(); // Asks the panel to refresh data.
+                };
+                ChangeMyNameQueryCtrl.templateUrl = 'partials/query.editor.html';
+                return ChangeMyNameQueryCtrl;
+            })(sdk_1.QueryCtrl);
+            exports_1("ChangeMyNameQueryCtrl", ChangeMyNameQueryCtrl);
+        }
+    }
 });
-exports.GenericDatasourceQueryCtrl = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _sdk = require('app/plugins/sdk');
-
-require('./css/query-editor.css!');
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var GenericDatasourceQueryCtrl = exports.GenericDatasourceQueryCtrl = function (_QueryCtrl) {
-  _inherits(GenericDatasourceQueryCtrl, _QueryCtrl);
-
-  function GenericDatasourceQueryCtrl($scope, $injector) {
-    _classCallCheck(this, GenericDatasourceQueryCtrl);
-
-    var _this = _possibleConstructorReturn(this, (GenericDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(GenericDatasourceQueryCtrl)).call(this, $scope, $injector));
-
-    _this.scope = $scope;
-    _this.target.target = _this.target.target || 'select metric';
-    _this.target.type = _this.target.type || 'timeserie';
-    return _this;
-  }
-
-  _createClass(GenericDatasourceQueryCtrl, [{
-    key: 'getOptions',
-    value: function getOptions(query) {
-      return this.datasource.metricFindQuery(query || '');
-    }
-  }, {
-    key: 'toggleEditorMode',
-    value: function toggleEditorMode() {
-      this.target.rawQuery = !this.target.rawQuery;
-    }
-  }, {
-    key: 'onChangeInternal',
-    value: function onChangeInternal() {
-      this.panelCtrl.refresh(); // Asks the panel to refresh data.
-    }
-  }]);
-
-  return GenericDatasourceQueryCtrl;
-}(_sdk.QueryCtrl);
-
-GenericDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
 //# sourceMappingURL=query_ctrl.js.map
